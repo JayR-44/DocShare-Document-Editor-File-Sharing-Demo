@@ -18,7 +18,7 @@ A lightweight collaborative document workspace built for the Ajaia full-stack as
 3. Copy `.env.example` to `.env.local` and set the values from Supabase project settings:
 
    ```bash
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_URL=https://your-project.supabase.co
    SUPABASE_SECRET_KEY=your-secret-key
    ```
 
@@ -68,4 +68,4 @@ Correctness is verified through the permissions test, TypeScript/lint/build chec
 
 ## Deployment
 
-Deploy the repository to Vercel and add `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SECRET_KEY` in the Vercel project environment variables. Use the same Supabase project created during setup. The deployed Vercel URL is the reviewer link.
+Deploy the repository to Vercel and add `SUPABASE_URL` and `SUPABASE_SECRET_KEY` in the Vercel project environment variables. Use the same Supabase project created during setup. The deployed Vercel URL is the reviewer link.
