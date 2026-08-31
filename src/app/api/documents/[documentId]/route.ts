@@ -25,3 +25,17 @@ export async function PATCH(request: NextRequest, { params }: Context) {
     if (error) throw error; return NextResponse.json({ document: toDocumentItem(data, access.permission) });
   } catch (error) { return NextResponse.json({ error: asApiError(error) }, { status: 500 }); }
 }
+
+export async function DELETE(request: NextRequest, { params }: Context) {
+  const body = await request.json();
+  const userId = userIdSchema.safeParse(body.userId);
+  if (!userId.success) return NextResponse.json({ error: "A valid user is required." }, { status: 400 });
+  try {
+    const documentId = (await params).documentId;
+    const access = await getDocumentAccess(documentId, userId.data);
+    if (!access || access.permission !== "owner") return NextResponse.json({ error: "Only the owner can delete a document." }, { status: 403 });
+    const { error } = await getSupabaseAdmin().from("documents").delete().eq("id", documentId);
+    if (error) throw error;
+    return NextResponse.json({ deletedId: documentId });
+  } catch (error) { return NextResponse.json({ error: asApiError(error) }, { status: 500 }); }
+}

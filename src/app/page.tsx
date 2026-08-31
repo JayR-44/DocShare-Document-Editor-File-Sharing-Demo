@@ -81,6 +81,23 @@ export default function Home() {
     } catch (requestError) { setError(requestError instanceof Error ? requestError.message : "Unable to share document."); }
   }
 
+  async function deleteDocument() {
+    if (!activeDocument || !activeUserId) return;
+    if (!window.confirm(`Delete "${activeDocument.title || "Untitled document"}"? This cannot be undone.`)) return;
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/documents/${activeDocument.id}`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId: activeUserId }) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error ?? "Unable to delete document.");
+      setDocuments((current) => {
+        const remaining = current.filter((document) => document.id !== payload.deletedId);
+        setActiveDocumentId(remaining[0]?.id ?? null);
+        return remaining;
+      });
+    } catch (requestError) { setError(requestError instanceof Error ? requestError.message : "Unable to delete document."); }
+    finally { setSaving(false); }
+  }
+
   async function importFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]; event.target.value = ""; if (!file || !activeUserId) return;
     const extension = file.name.split(".").pop()?.toLowerCase();
@@ -107,7 +124,7 @@ export default function Home() {
       <label className="user-switcher">Viewing as<select value={activeUserId} onChange={(event) => { const nextUserId = event.target.value; setActiveDocumentId(null); setActiveUserId(nextUserId); if (nextUserId) void loadDocuments(nextUserId); }}><option value="">Select user</option>{users.map((user) => <option value={user.id} key={user.id}>{user.name}</option>)}</select></label>
     </aside>
     <section className="document-area">
-      <header className="topbar"><div>{activeDocument && <span className="status-text">{saving ? "Saving" : "Saved"}</span>}</div><div className="topbar-actions">{activeDocument?.ownerId === activeUserId && <details className="share-menu"><summary>Share</summary><div className="share-panel"><p>Give a teammate access</p><select value={shareTargetId} onChange={(event) => setShareTargetId(event.target.value)}><option value="">Select teammate</option>{users.filter((user) => user.id !== activeUserId).map((user) => <option value={user.id} key={user.id}>{user.name}</option>)}</select><select value={sharePermission} onChange={(event) => setSharePermission(event.target.value as DocumentPermission)}><option value="editor">Can edit</option><option value="viewer">Can view</option></select><button type="button" onClick={() => void shareDocument()} disabled={!shareTargetId}>Invite</button></div></details>}<span className="avatar" title={activeUser?.name}>{activeUser?.name?.slice(0, 1) ?? "?"}</span></div></header>
+      <header className="topbar"><div>{activeDocument && <span className="status-text">{saving ? "Saving" : "Saved"}</span>}</div><div className="topbar-actions">{activeDocument?.ownerId === activeUserId && <><details className="share-menu"><summary>Share</summary><div className="share-panel"><p>Give a teammate access</p><select value={shareTargetId} onChange={(event) => setShareTargetId(event.target.value)}><option value="">Select teammate</option>{users.filter((user) => user.id !== activeUserId).map((user) => <option value={user.id} key={user.id}>{user.name}</option>)}</select><select value={sharePermission} onChange={(event) => setSharePermission(event.target.value as DocumentPermission)}><option value="editor">Can edit</option><option value="viewer">Can view</option></select><button type="button" onClick={() => void shareDocument()} disabled={!shareTargetId}>Invite</button></div></details><button className="delete-button" type="button" onClick={() => void deleteDocument()} disabled={saving}>Delete</button></>}<span className="avatar" title={activeUser?.name}>{activeUser?.name?.slice(0, 1) ?? "?"}</span></div></header>
       {error && <div className="error-banner" role="alert">{error}</div>}
       {loading ? <div className="loading-state">Loading workspace...</div> : activeDocument ? <article className="document-canvas"><div className="document-meta"><span>{activeDocument.ownerId === activeUserId ? "Owned by you" : `Shared by ${activeDocument.ownerName}`}</span>{activeDocument.permission === "viewer" && <span className="readonly-badge">View only</span>}</div><input className="document-title" value={activeDocument.title} onChange={(event) => setDocuments((current) => current.map((document) => document.id === activeDocument.id ? { ...document, title: event.target.value } : document))} onBlur={(event) => void updateDocument({ title: event.target.value })} disabled={activeDocument.permission === "viewer"} aria-label="Document title" /><RichTextEditor key={activeDocument.id} content={activeDocument.content} editable={activeDocument.permission !== "viewer"} onChange={(content) => void updateDocument({ content })} /><p className="updated-at">Last updated {formatDate(activeDocument.updatedAt)}</p></article> : <div className="loading-state">Create a document or import a text file to begin.</div>}
     </section>
