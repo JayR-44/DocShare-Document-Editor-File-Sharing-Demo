@@ -1,5 +1,7 @@
 # Submission Contents
 
+DocShare is submitted as a focused full-stack demonstration project. It emphasizes a reliable document lifecycle, server-enforced access control, and clear engineering tradeoffs over broad but incomplete collaboration features.
+
 ## Application
 
 - Next.js App Router application at the repository root.

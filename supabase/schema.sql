@@ -34,6 +34,6 @@ $$;
 create trigger documents_set_updated_at before update on public.documents for each row execute procedure public.set_updated_at();
 
 insert into public.profiles (id, name, email) values
-  ('11111111-1111-1111-1111-111111111111', 'Alex Morgan', 'alex@ajaia.demo'),
-  ('22222222-2222-2222-2222-222222222222', 'Sam Lee', 'sam@ajaia.demo')
+  ('11111111-1111-1111-1111-111111111111', 'Alex Morgan', 'alex@docshare.demo'),
+  ('22222222-2222-2222-2222-222222222222', 'Sam Lee', 'sam@docshare.demo')
 on conflict (id) do update set name = excluded.name, email = excluded.email;

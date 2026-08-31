@@ -117,7 +117,7 @@ export default function Home() {
   const sharedDocuments = documents.filter((document) => document.ownerId !== activeUserId);
   return <main className="workspace-shell">
     <aside className="sidebar">
-      <div className="brand"><span className="brand-mark">A</span><span>Ajaia Docs</span></div>
+      <div className="brand"><span className="brand-mark">D</span><span>DocShare</span></div>
       <button className="primary-button" type="button" onClick={() => void createDocument()} disabled={saving}>New document</button>
       <label className="import-button">Import .txt or .md<input type="file" accept=".txt,.md,text/plain,text/markdown" onChange={importFile} /></label>
       <div className="document-nav"><p className="section-label">My documents</p>{ownedDocuments.map((document) => <DocumentLink key={document.id} document={document} active={document.id === activeDocumentId} onClick={() => setActiveDocumentId(document.id)} />)}<p className="section-label section-label-spaced">Shared with me</p>{sharedDocuments.map((document) => <DocumentLink key={document.id} document={document} active={document.id === activeDocumentId} onClick={() => setActiveDocumentId(document.id)} />)}{!loading && documents.length === 0 && <p className="empty-list">No documents yet.</p>}</div>

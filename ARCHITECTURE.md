@@ -2,7 +2,7 @@
 
 ## Overview
 
-Ajaia Docs is a single Next.js application with a React client, Next.js Route Handlers for backend behavior, and Supabase Postgres for persistence. Keeping the frontend and backend in one deployable application reduces setup overhead while preserving a clear server-side boundary for document access.
+DocShare is a single Next.js application with a React client, Next.js Route Handlers for backend behavior, and Supabase Postgres for persistence. Keeping the frontend and backend in one deployable application reduces setup overhead while preserving a clear server-side boundary for document access.
 
 ```text
 Browser

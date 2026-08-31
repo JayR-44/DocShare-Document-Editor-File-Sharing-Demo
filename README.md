@@ -1,6 +1,10 @@
-# Ajaia Docs
+# DocShare - Collaborative Document Editor & File Sharing Platform
 
-A lightweight collaborative document workspace built for the Ajaia full-stack assessment.
+A lightweight collaborative document editor and file-sharing platform.
+
+## Project Context
+
+DocShare is a focused demonstration project that showcases a production-minded document workflow: structured editing, durable persistence, controlled sharing, and clear access rules. Its feature set is intentionally scoped to deliver those core capabilities reliably, while documenting the natural next steps for a broader product.
 
 ## What it does
 
